@@ -49,3 +49,5 @@ Generating charts to visualize the correlation between specific gene mutations a
 # Example Python code snippet used:
 # clinical_df = pd.read_csv('data/clinical_data.csv')
 # clean_df = clinical_df.dropna(subset=['diagnosis_date'])
+
+![Quality Chart](quality_report.png)
