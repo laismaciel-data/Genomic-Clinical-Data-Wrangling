@@ -1,35 +1,25 @@
 import pandas as pd
+import numpy as np
 
-# 1. Simulating a raw/messy genomic dataset
-# This represents data that might come from a hospital database
+# 1. SIMULATING DATA
 raw_data = {
-    'Patient_Name': ['Lais', 'Anderson', 'John', 'Mary'],
-    'Test_ID': [101, 102, 103, 104],
-    'Mutation_Detected': ['BRCA1', 'TP53', 'None', 'BRCA2'],
-    'Sequencing_Quality': [98, 45, 99, 30], # Simulated Phred Scores
-    'Processing_Status': [' Completed ', 'pending', 'COMPLETED', ' error ']
+    'Patient_ID': ['P001', 'P002', 'P003', 'P004', 'P005'],
+    'Gene_Mutation': ['BRCA1', 'TP53', 'EGFR', 'None', 'BRCA2'],
+    'Read_Quality': [98, 45, 88, np.nan, 32],
+    'Status': [' Completed ', 'pending', 'COMPLETED', 'ERROR', ' complete ']
 }
 
-# Loading data into a DataFrame (the standard tool for Data Analysts)
 df = pd.DataFrame(raw_data)
 
-print("--- Raw Dataset ---")
-print(df)
+# 2. CLEANING
+df['Status'] = df['Status'].str.strip().str.upper()
+mean_val = df['Read_Quality'].mean()
+df['Read_Quality'] = df['Read_Quality'].fillna(mean_val)
 
-# 2. DATA WRANGLING & CLEANING (Essential for Data Analysts)
-# Standardizing text: removing white spaces and converting to lowercase
-df['Processing_Status'] = df['Processing_Status'].str.strip().str.lower()
+# 3. FILTERING
+filtered_df = df[(df['Read_Quality'] > 50) & (df['Status'] == 'COMPLETED')]
 
-# 3. DATA FILTERING (Scientific Rigor)
-# Filtering only high-quality sequencing results (Quality Score > 50)
-high_quality_df = df[df['Sequencing_Quality'] > 50]
-
-print("\n--- Processed Data (Quality Score > 50) ---")
-print(high_quality_df)
-
-# 4. DATA INSIGHTS
-# Calculating the average quality score of the processed samples
-avg_quality = high_quality_df['Sequencing_Quality'].mean()
-print(f"\nPipeline Analysis Summary:")
-print(f"Average Quality Score: {avg_quality}")
-print("Status: Report generated successfully.")
+# 4. RESULTS
+print("--- Processed Genomic Data ---")
+print(filtered_df)
+print("\nSuccess: Pipeline executed.")
